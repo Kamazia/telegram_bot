@@ -4,7 +4,7 @@ import os
 import requests
 import aiohttp
 import time 
-from config import headers_news
+from config import headers_news,URL_NEWS
 
 
 conv = lambda x: datetime.strptime(x,"%Y-%m-%d %H:%M:%S")
@@ -20,7 +20,7 @@ async def get_text(request:str,lang='en') -> dict[str,list[str,int]]|None:
     all_news = {}
 
     async with aiohttp.ClientSession() as session:
-        async with session.get(headers=headers_news, params={'q':request,'lang':lang}) as s:
+        async with session.get(URL_NEWS,headers=headers_news, params={'q':request,'lang':lang}) as s:
             answer = await s.json()
 
     if answer['status'] == 'ok':
