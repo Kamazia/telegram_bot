@@ -60,7 +60,7 @@ async def update_portfolio(existing: dict, new: dict):
 
 async def create_or_update_portfolio(student_information: dict) -> dict:
     user_id = student_information['id']
-    db_client = motor.motor_asyncio.AsyncIOMotorClient(HOST, PORT)
+    db_client = motor.motor_asyncio.AsyncIOMotorClient(os.environ.get("MONGO_URL"))
     #db_client = motor.motor_asyncio.AsyncIOMotorClient(os.environ.get("MONGO_URL"))
     collection = db_client.user_info.telegram_user
 
@@ -82,7 +82,7 @@ async def create_or_update_portfolio(student_information: dict) -> dict:
 
 
 async def change_portfolio_info(user_id:str,new:dict):
-    db_client = motor.motor_asyncio.AsyncIOMotorClient(HOST, PORT)
+    db_client = motor.motor_asyncio.AsyncIOMotorClient(os.environ.get("MONGO_URL"))
     collection = db_client.user_info.telegram_user
     portfolio_info = await collection.find_one({'id': user_id})
     new['id'] = user_id
