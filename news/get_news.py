@@ -28,12 +28,9 @@ async def get_text(request:str,lang='en') -> dict[str,list[str,int]]|None:
     all_news = {}
     while True:
         answer = await req(request)
-        print(answer)
         if 'message' in answer:
-            print('mes')
             await asyncio.sleep(2)
         else:
-            print('ok')
             break
     
     if answer['status'] == 'ok':
@@ -43,6 +40,7 @@ async def get_text(request:str,lang='en') -> dict[str,list[str,int]]|None:
                     day = datetime.today().date() - conv(news['published_date']).date()
                     all_news[news["title"]] = [news["link"],day.days]
     else:
+        print('ПУСТО')
         return None
     
     return await sort_dict(all_news)
@@ -66,7 +64,7 @@ async def format_message(request:str,lang:str='en'):
             postfix = 'Сегодня'
 
         message += str(v[1]) + " " + postfix + '\n' + f'<a href="{v[0]}">{k}</a>' + '\n\n'
-
+        print("mes:",message)
     return message.rstrip()
 
 if __name__ == '__main__':
