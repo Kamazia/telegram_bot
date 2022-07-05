@@ -330,6 +330,7 @@ async def get_news(message: types.Message, state: FSMContext) -> None:
     data = message.text
 
     answer = await format_message(data)
+    print(answer)
 
     await bot.send_message(
         chat_id=message.chat.id,
