@@ -49,7 +49,7 @@ async def format_message(request:str,lang:str='en'):
     news_link = await get_text(request,lang)
     message = ''
 
-    if news_link == None:
+    if not news_link or news_link == None:
         message = f'По вашему запросу ничего не найдено'
         return message
 
@@ -64,7 +64,7 @@ async def format_message(request:str,lang:str='en'):
             postfix = 'Сегодня'
 
         message += str(v[1]) + " " + postfix + '\n' + f'<a href="{v[0]}">{k}</a>' + '\n\n'
-        print("mes:",message)
+
     return message.rstrip()
 
 if __name__ == '__main__':
