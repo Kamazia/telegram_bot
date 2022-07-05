@@ -326,13 +326,11 @@ async def get_news(message: types.Message, state: FSMContext) -> None:
     которая возвращает форматированное сообщение и отправляет это сообщение пользователю
 
     """
-    async with state.proxy() as data:
-        data = message.text
+    await state.finish()
+    data = message.text
 
     answer = await format_message(data)
 
-    await state.finish()
-    
     await bot.send_message(
         chat_id=message.chat.id,
         text=answer,
