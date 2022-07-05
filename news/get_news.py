@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime
 import json
 import os
@@ -22,8 +23,11 @@ async def get_text(request:str,lang='en') -> dict[str,list[str,int]]|None:
     async with aiohttp.ClientSession() as session:
         async with session.get(URL_NEWS,headers=headers_news, params={'q':request,'lang':lang}) as s:
             answer = await s.json()
-            print(answer)
-
+    if answer['message'] == 'You have exceeded the rate limit per second for your plan, BASIC, by the API provider':
+        await asyncio.sleep(1)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(URL_NEWS,headers=headers_news, params={'q':request,'lang':lang}) as s:
+                answer = await s.json()
     if answer['status'] == 'ok':
         for news in answer['articles']:
             if news['topic'] == 'finance' or news['topic'] == 'business':
