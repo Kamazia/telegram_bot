@@ -31,7 +31,7 @@ async def get_text(request:str,lang='en') -> dict[str,list[str,int]]|None:
         print(answer)
         if 'message' in answer:
             print('mes')
-            await asyncio.sleep(1)
+            await asyncio.sleep(2)
         else:
             print('ok')
             break
