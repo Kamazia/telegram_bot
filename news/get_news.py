@@ -15,6 +15,8 @@ async def req(request:str,lang='en'):
         async with session.get(URL_NEWS,headers=headers_news, params={'q':request,'lang':lang}) as s:
             answer = await s.json()
 
+    return answer
+
 async def sort_dict(old_dict:dict)->dict[str,list[str,int]]:
     new_dict = list(old_dict.items()) # Преобразование словаря в список из кортежей, каждый из которых состоит из пары ключ:значение
     new_dict.sort(key = lambda i: i[1][1]) # Сортировка происходит по дате
