@@ -31,7 +31,7 @@ class FSMnews(StatesGroup):
 @dp.message_handler(commands=['start'])
 async def start_message(message: types.Message)-> None:
     """ Ответ на команду старт """
-    r = redis.from_url(os.environ.get("REDIS_URL"),charset="utf-8",decode_responses=True)
+    r = redis.from_url(os.environ.get("REDIS_URL"),decode_responses=True)
     await bot.send_message(
         chat_id=message.chat.id,
         text=r.get('start_message'),
