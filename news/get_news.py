@@ -10,6 +10,11 @@ from config import headers_news,URL_NEWS
 
 conv = lambda x: datetime.strptime(x,"%Y-%m-%d %H:%M:%S")
 
+async def req(request:str,lang='en'):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(URL_NEWS,headers=headers_news, params={'q':request,'lang':lang}) as s:
+            answer = await s.json()
+
 async def sort_dict(old_dict:dict)->dict[str,list[str,int]]:
     new_dict = list(old_dict.items()) # Преобразование словаря в список из кортежей, каждый из которых состоит из пары ключ:значение
     new_dict.sort(key = lambda i: i[1][1]) # Сортировка происходит по дате
@@ -19,15 +24,13 @@ async def sort_dict(old_dict:dict)->dict[str,list[str,int]]:
 
 async def get_text(request:str,lang='en') -> dict[str,list[str,int]]|None:
     all_news = {}
-
-    async with aiohttp.ClientSession() as session:
-        async with session.get(URL_NEWS,headers=headers_news, params={'q':request,'lang':lang}) as s:
-            answer = await s.json()
-    if answer['message'] == 'You have exceeded the rate limit per second for your plan, BASIC, by the API provider':
-        await asyncio.sleep(1)
-        async with aiohttp.ClientSession() as session:
-            async with session.get(URL_NEWS,headers=headers_news, params={'q':request,'lang':lang}) as s:
-                answer = await s.json()
+    while True:
+        answer = await req(request)
+        if 'message' in answer:
+            pass
+        else:
+            break
+    
     if answer['status'] == 'ok':
         for news in answer['articles']:
             if news['topic'] == 'finance' or news['topic'] == 'business':
