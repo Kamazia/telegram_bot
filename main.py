@@ -11,7 +11,7 @@ from news.get_news import format_message
 from portfolio import portfolio_actions
 import config
 import re
-
+r = redis.from_url(os.environ.get("REDIS_URL"),decode_responses=True)
 
 class FSMportfolio(StatesGroup):
     add_stock = State()
@@ -31,7 +31,7 @@ class FSMnews(StatesGroup):
 @dp.message_handler(commands=['start'])
 async def start_message(message: types.Message)-> None:
     """ Ответ на команду старт """
-    r = redis.from_url(os.environ.get("REDIS_URL"),decode_responses=True)
+    #r = redis.from_url(os.environ.get("REDIS_URL"),decode_responses=True)
     await bot.send_message(
         chat_id=message.chat.id,
         text=r.get('start_message'),
@@ -44,7 +44,7 @@ async def help_message(message: types.Message)-> None:
     """ Ответ на команду help"""
     await bot.send_message(
         chat_id=message.chat.id,
-        text=config.help_message,
+        text=r.get('help_message'),
         parse_mode='HTML'
     )
 
@@ -61,7 +61,7 @@ async def text_message(message: types.Message,state: FSMContext)-> None:
         await FSMtikers.tickers.set()
         message = await bot.send_message(
             chat_id=message.chat.id,
-            text=config.tickers,
+            text=r.get('tickers'),
             parse_mode='HTML',
             reply_markup=keyboard.cancel_menu()
         )
@@ -71,7 +71,7 @@ async def text_message(message: types.Message,state: FSMContext)-> None:
     elif message.text.lower() == "портфель":
         await bot.send_message(
             chat_id=message.chat.id,
-            text=config.portfolio_message,
+            text=r.get('portfolio_message'),
             reply_markup=keyboard.portfolio_menu()
         )
 
@@ -79,14 +79,14 @@ async def text_message(message: types.Message,state: FSMContext)-> None:
         await FSMnews.news.set()
         await bot.send_message(
             chat_id=message.chat.id,
-            text=config.news_message,
+            text=r.get('news_message'),
             parse_mode='HTML'
         )
 
     elif message.text.lower() == "теория":
         await bot.send_message(
             chat_id=message.chat.id,
-            text=config.teoria_message,
+            text=r.get('teoria_message'),
             parse_mode='HTML',
             reply_markup=keyboard.teoria()
         )
@@ -122,7 +122,7 @@ async def cancel_handler(callback_query: types.CallbackQuery, state: FSMContext)
         await bot.edit_message_text(
             message_id=callback_query.message.message_id,
             chat_id=callback_query.from_user.id,
-            text=config.portfolio_message,
+            text=r.get('portfolio_message'),
             reply_markup=keyboard.portfolio_menu()
         )
 
@@ -144,7 +144,7 @@ async def process_callback_button1(callback_query: types.CallbackQuery,state: FS
         bot_message = await bot.edit_message_text(
             chat_id=callback_query.from_user.id,
             message_id=callback_query.message.message_id ,
-            text=config.add_in_portfolio,
+            text=r.get('add_in_portfolio'),
             reply_markup=keyboard.cancel_menu(),
             parse_mode='HTML'
         )
