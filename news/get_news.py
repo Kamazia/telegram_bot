@@ -28,9 +28,12 @@ async def get_text(request:str,lang='en') -> dict[str,list[str,int]]|None:
     all_news = {}
     while True:
         answer = await req(request)
+        print(answer)
         if 'message' in answer:
-            pass
+            print('mes')
+            await asyncio.sleep(1)
         else:
+            print('ok')
             break
     
     if answer['status'] == 'ok':
