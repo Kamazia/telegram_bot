@@ -196,7 +196,7 @@ async def process_callback_button1(callback_query: types.CallbackQuery,state: FS
 
 
             portfolio_prices = await ticker_actions.get_price(keys,0) # список цен тикеров
-            sum_price = sum([value[i]*portfolio_prices[i] for i in range(len(portfolio_prices))]) # сумма цен тикеров
+            sum_price = sum([value[i]*int(portfolio_prices[i]) for i in range(len(portfolio_prices))]) # сумма цен тикеров
             procent = (sum_price*100)/start_cost-100 # процент прибыли
             
             await bot.edit_message_text(
